@@ -12,43 +12,48 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import Password from "@/components/ui/Password";
+import { toast } from "sonner";
+import { useLoginMutation } from "@/redux/features/auth/auth.api";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  const [login] = useLoginMutation()
+  const navigate = useNavigate();
   const formSchema = z
     .object({
-      name: z
-        .string()
-        .min(3, {
-          error: "Name is too short",
-        })
-        .max(50),
       email: z.email(),
       password: z.string().min(8, { error: "Password is too short" }),
-      confirmPassword: z
-        .string()
-        .min(8, { error: "Confirm Password is too short" }),
-    })
-    .refine((data) => data.password === data.confirmPassword, {
-      message: "Password do not match",
-      path: ["confirmPassword"],
     });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
-      password: "",
-      confirmPassword: "",
+      password: ""
     },
   });
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
-    console.log(data);
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    const userInfo = {
+        email : data.email,
+        password : data.password
+    }
+    try{
+        const result = await login(userInfo).unwrap();
+        console.log(result);
+        toast.success("User Login Successfully");
+        navigate("/verify");
+    }catch(error){
+        if(error.status === 401){
+           toast.success("User Account is Not Verify");
+           navigate("/verify", {state : data.email});
+        }
+        console.log(error);
+    }
   }
   return (
     <Form {...form}>
@@ -65,19 +70,6 @@ export function LoginForm({
         </div>
 
         <div className="grid gap-6">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Username</FormLabel>
-                <FormControl>
-                  <Input placeholder="shadcn" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <FormField
             control={form.control}
             name="email"
@@ -104,22 +96,6 @@ export function LoginForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <Password {...field} />
-                </FormControl>
-                <FormDescription className="sr-only">
-                  This is your public display name.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="confirmPassword"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Confirm Password</FormLabel>
                 <FormControl>
                   <Password {...field} />
                 </FormControl>
