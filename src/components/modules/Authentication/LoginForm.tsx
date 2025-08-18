@@ -46,15 +46,24 @@ export function LoginForm({
         const result = await login(userInfo).unwrap();
         console.log(result);
         toast.success("User Login Successfully");
-        navigate("/verify");
-    }catch(error){
-        if(error.status === 401){
+        navigate("/verify", {state : data.email});
+    }catch(err){
+        if(err.status === 401){
            toast.success("User Account is Not Verify");
            navigate("/verify", {state : data.email});
         }
-        console.log(error);
+
+        if(err.data.message === "Password not match"){
+           toast.error("Invalid Credential");
+        }
+        if(err.data.message === "You Are Already Verified"){
+            toast.error("You Are Already Verified");
+            navigate("/verify", {state : data.email});
+        } 
+        console.log(err);
     }
   }
+  
   return (
     <Form {...form}>
       <form
