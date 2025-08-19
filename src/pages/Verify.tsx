@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router";
+import { useLocation } from "react-router";
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 
 const Verify = () => {
     const location = useLocation();
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const [email] = useState(location.state);
     const [confirmed, setConfirmed] = useState(false);
     const [sendOtp] = useSendOtpMutation();

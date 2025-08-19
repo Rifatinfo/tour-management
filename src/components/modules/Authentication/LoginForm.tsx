@@ -16,6 +16,7 @@ import { Link, useNavigate } from "react-router";
 import Password from "@/components/ui/Password";
 import { toast } from "sonner";
 import { useLoginMutation } from "@/redux/features/auth/auth.api";
+import config from "@/config";
 
 export function LoginForm({
   className,
@@ -45,8 +46,12 @@ export function LoginForm({
     try{
         const result = await login(userInfo).unwrap();
         console.log(result);
-        toast.success("User Login Successfully");
-        navigate("/verify", {state : data.email});
+        if(result.success){
+           toast.success("User Login Successfully");
+           navigate("/verify", {state : data.email});
+           navigate("/");
+        }
+        
     }catch(err){
         if(err.status === 401){
            toast.success("User Account is Not Verify");
@@ -124,6 +129,7 @@ export function LoginForm({
           </div>
 
           <Button
+            onClick={() => window.open(`${config.baseUrl}/auth/google`)}
             type="button"
             variant="outline"
             className="w-full cursor-pointer"
