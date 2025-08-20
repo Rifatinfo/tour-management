@@ -61,7 +61,7 @@ export function RegisterForm({
             const result = await register(userInfo).unwrap();
             console.log(result);
             toast.success("User created Successfully");
-            navigate("/verify");
+            navigate("/login");
         } catch (err) {
             if (err.status === 401) {
                 toast.success("User Account is Not Verify");
