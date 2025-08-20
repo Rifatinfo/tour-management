@@ -1,14 +1,20 @@
 import App from "@/App";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import About from "@/pages/About";
-import AddTour from "@/pages/Admin/AddTour";
-import Analytics from "@/pages/Admin/Analytics";
 import LoginPage from "@/pages/Login";
 import RegisterPage from "@/pages/Register";
-import Bookings from "@/pages/User/Bookings";
 import Verify from "@/pages/Verify";
+import { generateRoutes } from "@/utils/generateRoutes";
 
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, Navigate } from "react-router";
+import { adminSidebarItems } from "./adminSidebarItems";
+import { userSidebarItems } from "./userSidebarItems";
+import Unauthorized from "@/pages/Unauthorized";
+import { role } from "@/constants/role";
+import type { TRole } from "@/types";
+import { withAuth } from "@/utils/withAuth";
+// import { role } from "@/constants/role";
+// import type { TRole } from "@/types";
 
 export const router = createBrowserRouter([
   {
@@ -22,28 +28,14 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    Component: DashboardLayout,
+    Component: withAuth(DashboardLayout, role.superAdmin as TRole),
     path: "/admin",
-    children: [
-      {
-        Component: Analytics,
-        path: "analytics",
-      },
-      {
-        Component: AddTour,
-        path: "add-tour",
-      },
-    ]
+    children: [{index : true, element : <Navigate to="/admin/analytics"/>} , ...generateRoutes(adminSidebarItems)]
   },
   {
-    Component: DashboardLayout,
+    Component: withAuth(DashboardLayout, role.user as TRole),
     path: "/user",
-    children: [
-      {
-        Component: Bookings,
-        path: "booking",
-      }
-    ]
+    children: [{index : true, element : <Navigate to="/user/bookings"/>} , ...generateRoutes(userSidebarItems)]
   },
   {
     Component: LoginPage,
@@ -56,5 +48,9 @@ export const router = createBrowserRouter([
   {
     Component: Verify,
     path: "/verify",
+  },
+  {
+    Component: Unauthorized,
+    path: "/unauthorized",
   },
 ]);

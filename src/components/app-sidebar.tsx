@@ -12,29 +12,18 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import Logo from "@/assets/icon/Logo"
+import { Link } from "react-router"
+import { getSidebarItems } from "@/utils/getsidebarItems"
+import { useUserInfoQuery } from "@/redux/features/auth/auth.api"
 
-// This is sample data.
-const data = {
-
-  navMain: [
-    {
-      title: "Getting Started",
-      url: "#",
-      items: [
-        {
-          title: "Installation",
-          url: "#",
-        },
-        {
-          title: "Project Structure",
-          url: "#",
-        },
-      ],
-    },
-  ],
-}
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+ const {data : userData} = useUserInfoQuery(undefined);
+ console.log(userData);
+ 
+  const data = {
+  navMain: getSidebarItems(userData?.data?.role)
+}
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -49,8 +38,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <SidebarMenu>
                 {item.items.map((item) => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild isActive={item.isActive}>
-                      <a href={item.url}>{item.title}</a>
+                    <SidebarMenuButton asChild>
+                      <Link to={item.url}>{item.title}</Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
