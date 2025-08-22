@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Card,
   CardContent,
@@ -16,27 +17,70 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-// import {
-//   Popover,
-//   PopoverContent,
-//   PopoverTrigger,
-// } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
+  SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 
 import { Textarea } from "@/components/ui/textarea";
-import { useForm } from "react-hook-form";
+import { cn } from "@/lib/utils";
+import { useGetDivisionsQuery } from "@/redux/division/divisionApi";
+import { useGetTourTypeQuery } from "@/redux/Tour/tour.api";
+import { CalendarIcon } from "lucide-react";
+import { useForm,   type FieldValues, type SubmitHandler } from "react-hook-form";
+import { format, formatISO } from "date-fns";
+import MultipleImageUploader from "@/components/MultipleImageUploader";
+import { useState } from "react";
+import type { FileMetadata } from "@/hooks/use-file-upload";
+
 const AddTour = () => {
-    const form = useForm({
-    
-    });
-  const handleSubmit = async (data) => {
-    console.log(data);
-    
+  const { data: divisionData } = useGetDivisionsQuery(undefined);
+  const { data: tourTypeData } = useGetTourTypeQuery(undefined);
+  const [images, setImages] = useState<(File | FileMetadata)[] | []>([]);
+  
+  const divisionOption = divisionData?.map((item: {_id: string; name : string}) => ({
+    value : item._id,
+    label : item.name
+  }))
+  const tourOption = tourTypeData?.data.map((item: {_id: string; name : string}) => ({
+    value : item._id,
+    label : item.name
+  }))
+  const form = useForm({
+    defaultValues: {
+      title: "",
+      division: "",
+      tourType: "",
+      description: "",
+      location : "",
+      costFrom : "",
+      departureLocation : "",
+      arrivalLocation : "",
+      maxGuest : "",
+      minAge : "",
+      startDate : "",
+      endDate : ""
+    },
+  });
+  const handleSubmit : SubmitHandler<FieldValues> = async (data) => {
+    const tourData = {
+        ...data,
+        startDate : formatISO(data.startDate),
+        endDate : formatISO(data.endDate),
+    }
+    console.log(tourData);
+
+    const formData = new FormData();
+    formData.append("data", JSON.stringify(tourData));
+    images.forEach((image) => formData.append("files", image as File));
   };
   return (
     <div className="w-full max-w-4xl mx-auto px-5 mt-16">
@@ -138,13 +182,13 @@ const AddTour = () => {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {/* {divisionOptions?.map(
+                          {divisionOption?.map(
                             (item: { label: string; value: string }) => (
                               <SelectItem key={item.value} value={item.value}>
                                 {item.label}
                               </SelectItem>
                             )
-                          )} */}
+                          )}
                         </SelectContent>
                       </Select>
 
@@ -168,7 +212,7 @@ const AddTour = () => {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {/* {tourTypeOptions?.map(
+                          {tourOption?.map(
                             (option: { value: string; label: string }) => (
                               <SelectItem
                                 key={option.value}
@@ -177,7 +221,7 @@ const AddTour = () => {
                                 {option.label}
                               </SelectItem>
                             )
-                          )} */}
+                          )}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -213,7 +257,7 @@ const AddTour = () => {
                   )}
                 />
               </div>
-              {/* <div className="flex gap-5">
+              <div className="flex gap-5">
                 <FormField
                   control={form.control}
                   name="startDate"
@@ -302,7 +346,7 @@ const AddTour = () => {
                     </FormItem>
                   )}
                 />
-              </div> */}
+              </div>
 
               <div className="flex gap-5 items-stretch">
                 <FormField
@@ -318,9 +362,9 @@ const AddTour = () => {
                     </FormItem>
                   )}
                 />
-                {/* <div className="flex-1 mt-5">
+                <div className="flex-1 mt-5">
                   <MultipleImageUploader onChange={setImages} />
-                </div> */}
+                </div>
               </div>
               <div className="border-t border-muted w-full "></div>
             </form>
