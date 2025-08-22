@@ -6,6 +6,6 @@ export const baseApi = createApi({
   // baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:5000/api/v1' }),
   baseQuery: axiosBaseQuery(),
 
-  tagTypes : ["USER", "TOUR"],
+  tagTypes : ["USER", "TOUR", "DIVISION"],
   endpoints: () => ({}),
   });
