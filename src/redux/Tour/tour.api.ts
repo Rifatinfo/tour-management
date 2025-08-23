@@ -1,8 +1,8 @@
 import { baseApi } from "@/redux/baseApi";
 
 export const tourApi = baseApi.injectEndpoints({
-    endpoints : (builder) => ({
-       addTour: builder.mutation({
+  endpoints: (builder) => ({
+    addTour: builder.mutation({
       query: (tourData) => ({
         url: "/tour/create",
         method: "POST",
@@ -10,31 +10,31 @@ export const tourApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["TOUR"],
     }),
-      addTourType  : builder.mutation({
-         query : (tourTypeName) => ({
-            url : "/tour/create-tour-type",
-            method : "POST",
-            data : tourTypeName,
-        }),
-        invalidatesTags : ["TOUR"]
+    addTourType: builder.mutation({
+      query: (tourTypeName) => ({
+        url: "/tour/create-tour-type",
+        method: "POST",
+        data: tourTypeName,
       }),
-      removeTourType : builder.mutation({
-         query : (tourTypeId) => ({
-            url : `/tour/tour-types/${tourTypeId}`,
-            method : "DELETE",
-        }),
-        invalidatesTags : ["TOUR"]
+      invalidatesTags: ["TOUR"]
+    }),
+    removeTourType: builder.mutation({
+      query: (tourTypeId) => ({
+        url: `/tour/tour-types/${tourTypeId}`,
+        method: "DELETE",
       }),
-      getTourType  : builder.query({
-         query : () => ({
-            url : "/tour/tour-types",
-            method : "GET",
-        }),
-        providesTags : ["TOUR"],
+      invalidatesTags: ["TOUR"]
+    }),
+    getTourType: builder.query({
+      query: () => ({
+        url: "/tour/tour-types",
+        method: "GET",
       }),
+      providesTags: ["TOUR"],
+    }),
 
-    })
-        
+  })
+
 })
 
-export const {useAddTourTypeMutation , useGetTourTypeQuery, useRemoveTourTypeMutation, useAddTourMutation} = tourApi;
+export const { useAddTourTypeMutation, useGetTourTypeQuery, useRemoveTourTypeMutation, useAddTourMutation } = tourApi;
