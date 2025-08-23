@@ -5,36 +5,36 @@ import { Button } from "@/components/ui/button"
 import { useEffect, type Dispatch } from "react";
 
 // Create some dummy initial files
-const initialFiles = [
-  {
-    name: "image-01.jpg",
-    size: 1528737,
-    type: "image/jpeg",
-    url: "https://picsum.photos/1000/800?grayscale&random=1",
-    id: "image-01-123456789",
-  },
-  {
-    name: "image-02.jpg",
-    size: 1528737,
-    type: "image/jpeg",
-    url: "https://picsum.photos/1000/800?grayscale&random=2",
-    id: "image-02-123456789",
-  },
-  {
-    name: "image-03.jpg",
-    size: 1528737,
-    type: "image/jpeg",
-    url: "https://picsum.photos/1000/800?grayscale&random=3",
-    id: "image-03-123456789",
-  },
-  {
-    name: "image-04.jpg",
-    size: 1528737,
-    type: "image/jpeg",
-    url: "https://picsum.photos/1000/800?grayscale&random=4",
-    id: "image-04-123456789",
-  },
-]
+// const initialFiles = [
+//   {
+//     name: "image-01.jpg",
+//     size: 1528737,
+//     type: "image/jpeg",
+//     url: "https://picsum.photos/1000/800?grayscale&random=1",
+//     id: "image-01-123456789",
+//   },
+//   {
+//     name: "image-02.jpg",
+//     size: 1528737,
+//     type: "image/jpeg",
+//     url: "https://picsum.photos/1000/800?grayscale&random=2",
+//     id: "image-02-123456789",
+//   },
+//   {
+//     name: "image-03.jpg",
+//     size: 1528737,
+//     type: "image/jpeg",
+//     url: "https://picsum.photos/1000/800?grayscale&random=3",
+//     id: "image-03-123456789",
+//   },
+//   {
+//     name: "image-04.jpg",
+//     size: 1528737,
+//     type: "image/jpeg",
+//     url: "https://picsum.photos/1000/800?grayscale&random=4",
+//     id: "image-04-123456789",
+//   },
+// ]
 
 export default function MultipleImageUploader({onChange,}: {
   onChange: Dispatch<React.SetStateAction<[] | (File | FileMetadata)[]>>;
@@ -59,7 +59,6 @@ export default function MultipleImageUploader({onChange,}: {
     maxSize,
     multiple: true,
     maxFiles,
-    initialFiles,
   })
 
   useEffect(() => {
@@ -99,6 +98,7 @@ export default function MultipleImageUploader({onChange,}: {
                 size="sm"
                 onClick={openFileDialog}
                 disabled={files.length >= maxFiles}
+                type="button"
               >
                 <UploadIcon
                   className="-ms-0.5 size-3.5 opacity-60"
@@ -118,12 +118,14 @@ export default function MultipleImageUploader({onChange,}: {
                     src={file.preview}
                     alt={file.file.name}
                     className="size-full rounded-[inherit] object-cover"
+                   
                   />
                   <Button
                     onClick={() => removeFile(file.id)}
                     size="icon"
                     className="border-background focus-visible:border-background absolute -top-2 -right-2 size-6 rounded-full border-2 shadow-none"
                     aria-label="Remove image"
+                    type="button"
                   >
                     <XIcon className="size-3.5" />
                   </Button>
@@ -143,7 +145,7 @@ export default function MultipleImageUploader({onChange,}: {
             <p className="text-muted-foreground text-xs">
               SVG, PNG, JPG or GIF (max. {maxSizeMB}MB)
             </p>
-            <Button variant="outline" className="mt-4" onClick={openFileDialog}>
+            <Button variant="outline" className="mt-4" onClick={openFileDialog} type="button">
               <UploadIcon className="-ms-1 opacity-60" aria-hidden="true" />
               Select images
             </Button>
